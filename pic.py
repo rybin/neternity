@@ -1,6 +1,9 @@
 #!/usr/bin/env python3.6
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 import string
+from pathlib import Path
+from random import random
+
 
 ImgSize = 100
 II = 32
@@ -41,11 +44,24 @@ def drawLetter(char, font):
 
 
 if __name__ == '__main__':
-    fontpath = './font/DejaVuSansMono.ttf'
+    # fonts = ['DejaVuSansMono.ttf', 'DejaVuSans.ttf', 'DejaVuSerif.ttf']
+    # fontpath = './font/DejaVuSansMono.ttf'
     fontsize = 100
-    font = ImageFont.truetype(fontpath, fontsize)
 
-    for i in string.ascii_letters:
-        img = drawLetter(i, font)
-        img.save('pic/' + i + '.png', 'png')
-        # img.show()
+    fonts = Path('./font/')
+
+    for fontfile in fonts.glob('*.ttf'):
+        print(fontfile)
+        font = ImageFont.truetype(str(fontfile), fontsize)
+        for i in string.ascii_letters:
+            img = drawLetter(i, font)
+            img.save(f'pic/{i}_{fontfile.stem}_{str(random())[2:]}.png', 'png')
+
+    # for j in fonts():
+    #     # font = ImageFont.truetype(fontpath, fontsize)
+    #     font = ImageFont.truetype('./font/' + j, fontsize)
+
+    #     for i in string.ascii_letters:
+    #         img = drawLetter(i, font)
+    #         img.save('pic/' + i + '.png', 'png')
+    #         # img.show()

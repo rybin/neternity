@@ -5,6 +5,10 @@ from tabulate import tabulate
 import string
 import cv2
 import random
+from pathlib import Path
+from collections import namedtuple
+
+Train = namedtuple('Train', ('char', 'input'))
 
 speed = .1
 
@@ -40,29 +44,28 @@ def err(test, expect):
     return out
 
 
-def testLetter(letter):
-    letterNP = np.abs((255 - cv2.imread('pic/' + letter + '.png', 0)) / 255)
-    return err(letterNP, list(map(lambda x: x == letter,
-                                  string.ascii_letters)))
+def lesson(char, expect):
+    result = err(char, expect)
+    return result.index(max(result)) == expect.index(max(expect))
 
 
-def oneTest(letter, letters):
-    res = testLetter(letter)
-    index = letters.index(letter)
-    # print(letter, letters[res.index(max(res))], res[index], max(res), res.index(max(res)))
-    return res[index] >= max(res)
+def epoch(pics):
+    for pic in pics:
+        yield lesson(pic.input,
+                     list(map(lambda x: x == pic.char, string.ascii_letters)))
+
+
+def load(pics):
+    for pic in pics:
+        yield Train(char=pic.stem[0], input=(255 - cv2.imread(str(pic), 0)) / 255)
 
 
 def learn():
-    # a = testLetter()[0] > .7
-    # print(a)
-    # print(list(map(lambda x: x == 'A', string.ascii_uppercase)))
-    seq = list(string.ascii_letters)
-    for i in range(400):
-        random.shuffle(seq)
-        a = sum([oneTest(x, string.ascii_letters) for x in seq])
-        print(f'{a},')
-
+    pics = list(load(Path().glob(r'pic/[a-zA-Z]*.png')))
+    for i in range(10):
+        random.shuffle(pics)
+        right = sum(epoch(pics))
+        print(f'{i}: {right}')
 
 # q = cv2.imread('pic/A.png', 0)
 # q = np.abs((255 - q) / 255)
@@ -74,6 +77,7 @@ def learn():
 # a = sum([err(q, list(map(lambda x: x == 'A', string.ascii_uppercase)))
 #          [0] > 0.7 for x in range(100)])
 # print(a)
+
 
 learn()
 
