@@ -45,22 +45,69 @@ def err(test, expect):
 
 
 def lesson(char, expect):
+    """
+    Вызывает обучение, сравнивет полученый результат с ожидаемым.
+    Если в отданым функцией обучения массива максимальное число стоит на том же месте что и максимальное число в ожидаемом, то значение угадано правильно, иначе нет.
+
+    Parametrs
+    ---------
+    char : numpy.ndarray
+        Двумерный массив с символом для распознавания
+    expect : list
+        Массив с отмеченой правильной буквой
+
+    Returns
+    -------
+    bool
+        Если угаданое значение правильно -- `True`, иначе -- `False`
+    """
     result = err(char, expect)
     return result.index(max(result)) == expect.index(max(expect))
 
 
 def epoch(pics):
+    """
+    Вызывает lesson для каждой картинки в обучающей выборке, собирает ожидаемое значение.
+    В массиве ожидаемого значения на месте правильной буквы стоит 1, иначе 0.
+
+    Parametrs
+    ---------
+    pics : list
+        Список из namedtuple `Train`
+
+    Yields
+    ------
+    bool
+        Результат работы функции lesson
+    """
     for pic in pics:
         yield lesson(pic.input,
                      list(map(lambda x: x == pic.char, string.ascii_letters)))
 
 
 def load(pics):
+    """
+    Загрузка всей обучающей выборки
+
+    Parametrs
+    ---------
+    pics : list
+        Список файлов источников, элементы -- `Path`
+    Yields
+    ------
+    Train
+        namedtuple,
+        char -- символ,
+        input -- значнения, изображение, приведенное к необходимому для нейроной сети виду
+    """
     for pic in pics:
         yield Train(char=pic.stem[0], input=(255 - cv2.imread(str(pic), 0)) / 255)
 
 
 def learn():
+    """
+    Вызывает функции лоя обучения, перемешивает обучающую выборку после каждой эпохи
+    """
     pics = list(load(Path().glob(r'pic/[a-zA-Z]*.png')))
     for i in range(10):
         random.shuffle(pics)

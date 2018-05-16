@@ -154,7 +154,7 @@ if __name__ == '__main__':
     image = cv2.imread('test/testsample6.png')
     ans = []
     for char in findChar(image):
-        qwe = char / 255
+        qwe = (255 - char) / 255
         # print(qwe[1, :])
         # print(char[1, :])
         # print(start.start(np.abs(255 - char) / 255))
@@ -165,9 +165,11 @@ if __name__ == '__main__':
         ans.append(start.start(qwe))
         # print(char[1,:])
         # break
-    print(ans)
+    # print(ans)
+    print(''.join(ans))
+    print('======')
 
-    ans=[]
+    ans = []
     for i, x, y in findChar2(image):
         # print(start.start(np.abs((255 - i) / 255)))
         # cv2.imshow('image', i)
@@ -181,7 +183,7 @@ if __name__ == '__main__':
         # break
     # print(ans)
     ans = np.array(sorted(ans, key=lambda x: x[1]))
-    ans = ' '.join(ans[:, 0])
+    ans = ''.join(ans[:, 0])
     print(ans)
 
     # image = findWord(image)
