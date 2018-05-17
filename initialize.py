@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.6
 import numpy as np
 
-II = 32
-SL = 128
+II = 16
+SL = 80
 OL = 52
 
 # np.save('./f/bias1.npy', np.zeros(SL))

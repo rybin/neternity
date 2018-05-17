@@ -4,8 +4,11 @@ from PIL import Image
 import numpy as np
 import start
 import pic
+import sys
 
-II = 32
+II = 16
+SPACE = 5132
+NEWLINE = 5130
 
 
 def center(image):
@@ -48,6 +51,7 @@ def scale(image, imagesize):
         Изображение размерами imagesize на imagesize
     """
     return cv2.resize(center(image), (imagesize, imagesize))
+    # return np.array(pic.scale(Image.fromarray(image), (II, II)))
 
 
 def lines(thresh):
@@ -66,12 +70,18 @@ def lines(thresh):
         Следующая найденая строка
     """
     hist = np.sum(thresh, axis=1)
+    maxx = thresh.shape[1] / 100
     last = 0
+    line = 0
     for j, i in enumerate(hist):
-        if i < 1000:
+        if i < maxx:
             if last < j - 1:
                 yield thresh[last:j]
             last = j
+        if i != 0:
+            if j - line > 40:
+                yield NEWLINE
+            line = j
 
 
 def chars(thresh):
@@ -90,12 +100,20 @@ def chars(thresh):
         Следующая найденая буква
     """
     hist = np.sum(thresh, axis=0)
+    end = len(hist)
     last = 0
+    word = 0
     for j, i in enumerate(hist):
         if i == 0:
             if last < j - 1:
                 yield thresh[:, last:j]
             last = j
+        if i != 0:
+            if j - word > 40:
+                yield SPACE
+            word = j
+        if j == end - 1:
+            yield SPACE
 
 
 def findChar(image):
@@ -115,13 +133,28 @@ def findChar(image):
     """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, thresh = cv2.threshold(gray, 130, 255, cv2.THRESH_BINARY_INV)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 21))
+    # thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     for line in lines(thresh):
+        if line is NEWLINE:
+            yield NEWLINE
+            continue
         for char in chars(line):
+            if char is SPACE:
+                yield SPACE
+                continue
+            thresh = cv2.morphologyEx(char, cv2.MORPH_CLOSE, kernel)
             _, contours, _ = cv2.findContours(
-                char, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+                thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            ans = []
             for contour in contours:
                 [x, y, w, h] = cv2.boundingRect(contour)
-                yield scale(255 - char[y:y + h, x:x + w], II)
+                if h < 50:
+                    continue
+                # yield scale(255 - char[y:y + h, x:x + w], II)
+                ans.append((scale(255 - char[y:y + h, x:x + w], II), x))
+            ans = map(lambda x: x[0], sorted(ans, key=lambda x: x[1]))
+            yield from ans
 
 
 def findChar2(image):
@@ -142,7 +175,7 @@ def findChar2(image):
         # cv2.imshow('image', image[y:y + h, x:x + w])
         # cv2.imshow('image', pic.scale(i[y:y + h, x:x + w], (32, 32)))
         # cv2.imwrite('c/'+str(np.random.rand()), np.array(pic.scale(Image.fromarray(i[y:y + h, x:x + w]), (32, 32))))
-        yield np.array(pic.scale(Image.fromarray(image[y:y + h, x:x + w]), (32, 32))), x, y
+        yield np.array(pic.scale(Image.fromarray(image[y:y + h, x:x + w]), (II, II))), x, y
         # cv2.imshow('image', np.array(pic.scale(Image.fromarray(image[y:y + h, x:x + w]), (32, 32))))
         # cv2.waitKey(0)
         # return False
@@ -151,9 +184,20 @@ def findChar2(image):
 
 
 if __name__ == '__main__':
-    image = cv2.imread('test/testsample6.png')
+    # image = cv2.imread('test/testsample10.png')
+    image = cv2.imread(sys.argv[1])
+    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # _, thresh = cv2.threshold(gray, 130, 255, cv2.THRESH_BINARY_INV)
+    # cv2.imshow('image', thresh)
+    # cv2.waitKey(0)
     ans = []
     for char in findChar(image):
+        if char is SPACE:
+            ans.append(' ')
+            continue
+        if char is NEWLINE:
+            ans.append('\n')
+            continue
         qwe = (255 - char) / 255
         # print(qwe[1, :])
         # print(char[1, :])
@@ -168,7 +212,7 @@ if __name__ == '__main__':
     # print(ans)
     print(''.join(ans))
     print('======')
-
+    exit()
     ans = []
     for i, x, y in findChar2(image):
         # print(start.start(np.abs((255 - i) / 255)))

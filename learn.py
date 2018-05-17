@@ -109,10 +109,14 @@ def learn():
     Вызывает функции лоя обучения, перемешивает обучающую выборку после каждой эпохи
     """
     pics = list(load(Path().glob(r'pic/[a-zA-Z]*.png')))
-    for i in range(10):
+    length = len(pics)
+    for i in range(100):
         random.shuffle(pics)
         right = sum(epoch(pics))
         print(f'{i}: {right}')
+        if right / length > 0.97:
+            print('reach percent')
+            break
 
 # q = cv2.imread('pic/A.png', 0)
 # q = np.abs((255 - q) / 255)

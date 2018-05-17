@@ -5,8 +5,8 @@ from pathlib import Path
 from random import random
 
 
-ImgSize = 100
-II = 32
+ImgSize = 200
+II = 16
 
 
 def scale(image, max_size, method=Image.ANTIALIAS):
@@ -42,6 +42,12 @@ def drawLetter(char, font):
     d.text((0, 0), char, font=font, fill=(0))
     return letter(img)
 
+
+# fontsize = 100
+# font = ImageFont.truetype('./font/DejaVuSansMono.ttf', fontsize)
+# img = drawLetter('g', font)
+# img.show()
+# exit()
 
 if __name__ == '__main__':
     # fonts = ['DejaVuSansMono.ttf', 'DejaVuSans.ttf', 'DejaVuSerif.ttf']
