@@ -7,24 +7,24 @@ bias1 = np.load('./f/bias1.npy')
 bias2 = np.load('./f/bias2.npy')
 
 
+def activation(put):
+    ''' Сигмоидальная функция активации '''
+    return 1 / (1 + np.exp(-put))
+
+
+def activationDer(put):
+    ''' Производная сигмоидальной функции активации '''
+    return activation(put) * (1 - activation(put))
+
+
 # def activation(put):
 #     ''' Функция активации '''
-#     return 1 / (1 + np.exp(-put))
+#     return 2 / (1 + np.exp(-put)) - 1
 
 
 # def activationDer(put):
 #     ''' Производная функции активации '''
-#     return activation(put) * (1 - activation(put))
-
-
-def activation(put):
-    ''' Функция активации '''
-    return 2 / (1 + np.exp(-put)) - 1
-
-
-def activationDer(put):
-    ''' Производная функции активации '''
-    return (1 / 2) * (1 + activation(put)) * (1 - activation(put))
+#     return (1 / 2) * (1 + activation(put)) * (1 - activation(put))
 
 
 def first(inp, act):
@@ -39,10 +39,3 @@ def second(first, act):
 
 def call(inp):
     return second(list(first(inp, activation)), activation)
-
-
-if __name__ == '__main__':
-    a = np.random.rand(32, 32) - 0.5
-
-    for i in call(a):
-        print(i)

@@ -113,7 +113,8 @@ def learn():
     for i in range(100):
         random.shuffle(pics)
         right = sum(epoch(pics))
-        print(f'{i}: {right}')
+        # print(f'{i}: {right}')
+        print(f'{right},')
         if right / length > 0.97:
             print('reach percent')
             break
@@ -130,9 +131,10 @@ def learn():
 # print(a)
 
 
-learn()
+if __name__ == '__main__':
+    learn()
 
-np.save('./f/layer1.npy', network.layer1)
-np.save('./f/layer2.npy', network.layer2)
-np.save('./f/bias1.npy', network.bias1)
-np.save('./f/bias2.npy', network.bias2)
+    np.save('./f/layer1.npy', network.layer1)
+    np.save('./f/layer2.npy', network.layer2)
+    np.save('./f/bias1.npy', network.bias1)
+    np.save('./f/bias2.npy', network.bias2)

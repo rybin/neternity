@@ -69,12 +69,11 @@ def lines(thresh):
     numpy.ndarray
         Следующая найденая строка
     """
-    hist = np.sum(thresh, axis=1)
-    maxx = thresh.shape[1] / 100
+    hist = np.sum(thresh, axis=1) // 255
     last = 0
     line = 0
     for j, i in enumerate(hist):
-        if i < maxx:
+        if i == 0:
             if last < j - 1:
                 yield thresh[last:j]
             last = j
@@ -99,7 +98,7 @@ def chars(thresh):
     numpy.ndarray
         Следующая найденая буква
     """
-    hist = np.sum(thresh, axis=0)
+    hist = np.sum(thresh, axis=0) // 255
     end = len(hist)
     last = 0
     word = 0
@@ -149,7 +148,7 @@ def findChar(image):
             ans = []
             for contour in contours:
                 [x, y, w, h] = cv2.boundingRect(contour)
-                if h < 50:
+                if h < 60:
                     continue
                 # yield scale(255 - char[y:y + h, x:x + w], II)
                 ans.append((scale(255 - char[y:y + h, x:x + w], II), x))
