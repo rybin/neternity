@@ -113,17 +113,6 @@ def learn():
             print('reach percent')
             break
 
-# q = cv2.imread('pic/A.png', 0)
-# q = np.abs((255 - q) / 255)
-# print(q)
-
-# a = err(q, list(map(lambda x: x == 'A', string.ascii_uppercase)))
-# print(a)
-
-# a = sum([err(q, list(map(lambda x: x == 'A', string.ascii_uppercase)))
-#          [0] > 0.7 for x in range(100)])
-# print(a)
-
 
 if __name__ == '__main__':
     learn()
