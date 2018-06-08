@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.6
 import numpy as np
 import network
-from tabulate import tabulate
 import string
 import cv2
 import random
@@ -11,11 +10,6 @@ from collections import namedtuple
 Train = namedtuple('Train', ('char', 'input'))
 
 speed = .1
-
-
-def p(s, table):
-    print(s)
-    print(tabulate(table, tablefmt='fancy_grid'))
 
 
 def err(test, expect):
