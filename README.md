@@ -1,18 +1,18 @@
 # neternity
 
-Neural network for text recognition. Writen in Python with numpy.
+Neural network for text recognition created for educational purposes. Writen in Python with numpy.
 
 ## Usage
 
-- install dependencies from requirements.txt
-- run initialize.py
+- install dependencies from `requirements.txt`
+- run `initialize.py`,
     to create layers for NN
-- run pic.py
+- run `pic.py`,
     to create training images
-- run learn.py
+- run `learn.py`,
     to start teaching NN
-- run start.py
-    to recognize text on other image
+- run `start.py`,
+    to recognize text on image
 
 ## Limitation
 
@@ -21,16 +21,13 @@ Goal is to recognize scanned-like text in high resolution.
 
 ## Branches
 
-- master
+- **master**,
     main development
-- hough
+- **hough**,
     hough transformation
-- cnn
+- **cnn**,
     Convolution Neural Network
-- keras
+- **keras**,
     same NN writen in keras
-- cpp
+- **cpp**,
     same NN writen in cpp
-
-
-
